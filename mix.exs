@@ -20,14 +20,11 @@ defmodule DeskClock.MixProject do
     ]
   end
 
-  # Starting nerves_bootstrap adds the required aliases to Mix.Project.config()
-  # Aliases are only added if MIX_TARGET is set.
   def bootstrap(args) do
     Application.start(:nerves_bootstrap)
     Mix.Task.run("loadconfig", args)
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       mod: {DeskClock.Application, []},
@@ -35,7 +32,6 @@ defmodule DeskClock.MixProject do
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       # Dependencies for all targets
@@ -47,6 +43,7 @@ defmodule DeskClock.MixProject do
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.6", targets: @all_targets},
       {:nerves_pack, "~> 0.2", targets: @all_targets},
+      {:nerves_firmware_ssh, "~> 0.3", targets: @all_targets},
 
       # Dependencies for specific targets
       {:nerves_system_rpi, "~> 1.12", runtime: false, targets: :rpi},
@@ -57,6 +54,13 @@ defmodule DeskClock.MixProject do
       {:nerves_system_rpi4, "~> 1.12", runtime: false, targets: :rpi4},
       {:nerves_system_bbb, "~> 2.7", runtime: false, targets: :bbb},
       {:nerves_system_x86_64, "~> 1.12", runtime: false, targets: :x86_64},
+
+      # Application libraries
+      {:nerves_time, "~> 0.3"},
+      {:timex, "~> 3.5"},
+      {:ssd1322, "~> 0.1"},
+      {:ex_paint, "~> 0.1"},
+      {:egd, github: "erlang/egd"}
     ]
   end
 
