@@ -30,7 +30,7 @@ defmodule DeskClock.Display do
   def init(_args) do
     upper_zone = "Etc/UTC"
     lower_zone = "America/New_York"
-    face_state = Face.init(DeskClock.Faces.Lazy, upper_zone, lower_zone)
+    face_state = Face.init(DeskClock.Faces.NoSync, upper_zone, lower_zone)
     {:ok, device_pid} = SSD1322.start_link()
     SSD1322.contrast(device_pid, 128)
 
@@ -42,12 +42,22 @@ defmodule DeskClock.Display do
      }}
   end
 
-  def handle_call({:update, time}, _from, %{display_on: true} = state) do
-    {:reply, :ok, %{state | face_state: do_update(time, state)}}
-  end
+  def handle_call({:update, time}, _from, state) do
+    cond do
+      NervesTime.synchronized?() && match?({DeskClock.Faces.NoSync, _}, state[:face_state]) ->
+        face_state = change_face(DeskClock.Faces.Lazy, state)
+        {:reply, :ok, %{state | face_state: face_state}}
 
-  def handle_call({:update, _time}, _from, %{display_on: false} = state) do
-    {:reply, :ok, state}
+      !NervesTime.synchronized?() && !match?({DeskClock.Faces.NoSync, _}, state[:face_state]) ->
+        face_state = change_face(DeskClock.Faces.NoSync, state)
+        {:reply, :ok, %{state | face_state: face_state}}
+
+      state[:display_on] ->
+        {:reply, :ok, %{state | face_state: do_update(time, state)}}
+
+      true ->
+        {:reply, :ok, state}
+    end
   end
 
   def handle_call({:set_zone, subface, direction}, _from, state) do
@@ -73,6 +83,13 @@ defmodule DeskClock.Display do
 
   def terminate(_reason, %{device_pid: device_pid}) do
     SSD1322.display_off(device_pid)
+  end
+
+  defp change_face(new_face_mod, state) do
+    upper_zone = Face.get_zone(:upper_zone, state[:face_state])
+    lower_zone = Face.get_zone(:lower_zone, state[:face_state])
+    state = %{state | face_state: Face.init(new_face_mod, upper_zone, lower_zone)}
+    do_update(DateTime.utc_now(), state)
   end
 
   defp do_update(time, %{face_state: face_state, device_pid: device_pid}) do
