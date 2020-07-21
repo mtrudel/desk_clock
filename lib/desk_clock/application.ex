@@ -20,7 +20,8 @@ defmodule DeskClock.Application do
     [
       # Children for all targets except host
       DeskClock.Display,
-      DeskClock.Movement
+      DeskClock.Movement,
+      DeskClock.RotaryEncoder
     ]
   end
 
