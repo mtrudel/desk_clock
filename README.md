@@ -8,6 +8,10 @@ suitable for actual use.
 Time is synchronized via NTP and display updates are adjusted to optimize the timeliness of the displayed time. In
 typical operation, the displayed time should be no more than ~5ms out of sync with correct time.
 
+It looks like this:
+
+![desk_clock](https://user-images.githubusercontent.com/79646/89941198-af68d480-dbe8-11ea-9055-fb3ec7321884.png)
+
 ## Building Hardware
 
 Desk Clock runs on a Raspberry Pi and uses the following peripherals:
