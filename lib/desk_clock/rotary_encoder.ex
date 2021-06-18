@@ -33,7 +33,7 @@ defmodule DeskClock.RotaryEncoder do
     {:ok, %{a: a, b: b, z: z, fresh_z: false}}
   end
 
-  # Quadrature flipped; let's see which was we turned and if we're pushed down or not
+  # Quadrature flipped; let's see which way we turned and if we're pushed down or not
   def handle_info({:circuits_gpio, @a, _time, 1}, %{b: b, z: z} = state) do
     zone = if GPIO.read(z) == 1, do: :upper_zone, else: :lower_zone
     direction = if GPIO.read(b) == 1, do: :next, else: :prev
