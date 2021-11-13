@@ -1,12 +1,12 @@
 # Desk Clock
 
-A Nerves-powered, NTP-synchronized, OLED-outputting desktop clock, running on a Raspberry Pi.
+A Nerves-powered, NTP-synchronized, SPI-connected, OLED-outputting desktop clock, running on a Raspberry Pi.
 It was built as a demo for a [talk
 given](https://github.com/mtrudel/talks/tree/master/2020-07-Toronto-Elixir-Night-Nerves.pdf) at the July 2020 Toronto Elixir Meetup, but is also
 suitable for actual use.
 
 Time is synchronized via NTP and display updates are adjusted to optimize the timeliness of the displayed time. In
-typical operation, the displayed time should be no more than ~5ms out of sync with correct time.
+typical operation, the displayed time should be no more than ~5ms out of sync with the device's NTP dervied time.
 
 It looks like this:
 
